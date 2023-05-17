@@ -5,10 +5,14 @@ import {
   TextInput,
   View,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { signUp } from "../services/api";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { KeyboardAvoidingView } from "react-native-web";
+
+import { formStyles } from "../assets/styles";
 
 export default function SignUpScreen({ setToken }) {
   const navigation = useNavigation();
@@ -18,6 +22,7 @@ export default function SignUpScreen({ setToken }) {
     username: "nono",
     description: "whatever",
     password: "pass",
+    passwordCheck: "pass",
   });
   const [pending, setPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,14 +32,26 @@ export default function SignUpScreen({ setToken }) {
   };
 
   const handleSignUp = async () => {
-    setPending(false);
+    setPending(true);
     setErrorMessage("");
     try {
+      if (
+        !formData.email ||
+        !formData.username ||
+        !formData.password ||
+        !formData.passwordCheck
+      ) {
+        throw new Error("All fields are required");
+      }
+      if (formData.password !== formData.passwordCheck) {
+        throw new Error("The two passwords differ");
+      }
+
       const user = await signUp(formData);
       console.log(user);
       const userToken = user.token;
       setToken(userToken);
-      navigation.navigate("Tab");
+      alert("Welcome back!");
     } catch (error) {
       console.log(error);
       setErrorMessage(error.message);
@@ -43,8 +60,8 @@ export default function SignUpScreen({ setToken }) {
   };
 
   return (
-    <View>
-      <View>
+    <KeyboardAvoidingView>
+      <View style={formStyles.container}>
         <Text>Email: </Text>
         <TextInput
           placeholder="email"
@@ -62,6 +79,8 @@ export default function SignUpScreen({ setToken }) {
           placeholder="description"
           value={formData.description}
           onChange={handleChangeOf("description")}
+          multiline={true}
+          textAlignVertical="top"
         />
 
         <Text>Password: </Text>
@@ -69,17 +88,28 @@ export default function SignUpScreen({ setToken }) {
           placeholder="password"
           secureTextEntry={true}
           value={formData.password}
+          onChange={handleChangeOf("password")}
         />
 
-        <Button title="Sign up" onPress={handleSignUp} disabled={pending} />
+        <Text>Confirm password: </Text>
+        <TextInput
+          placeholder="password"
+          secureTextEntry={true}
+          value={formData.password2}
+          onChange={handleChangeOf("passwordCheck")}
+        />
 
-        <TouchableOpacity
+        <Pressable onPress={handleSignUp} disabled={pending}>
+          <Text>Sign Up</Text>
+        </Pressable>
+
+        <Pressable
           onPress={() => {
             navigation.navigate("SignUp");
           }}
         >
-          <Text>Already an account ? Sign In</Text>
-        </TouchableOpacity>
+          <Text>Already have an account? Sign In</Text>
+        </Pressable>
 
         {pending ? (
           <ActivityIndicator />
@@ -87,6 +117,6 @@ export default function SignUpScreen({ setToken }) {
           <Text>{errorMessage}</Text>
         ) : null}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

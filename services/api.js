@@ -21,3 +21,21 @@ export const signUp = async (payload) => {
     console.error(error.response?.data.message);
   }
 };
+
+export const getRooms = async () => {
+  try {
+    const result = await axios.get(`${API_URL}/rooms`);
+    return result.data;
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+export const getRoom = async (roomId) => {
+  try {
+    const result = await axios.get(`${API_URL}/rooms/${roomId}`);
+    return result.data;
+  } catch (error) {
+    console.error(error.message);
+  }
+};

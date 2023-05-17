@@ -1,8 +1,18 @@
 import { useNavigation } from "@react-navigation/core";
-import { Button, Text, TextInput, View, TouchableOpacity } from "react-native";
+import {
+  Button,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Pressable,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useState } from "react";
 import { signIn } from "../services/api";
 import { ActivityIndicator } from "react-native-paper";
+
+import { formStyles } from "../assets/styles";
 
 export default function SignInScreen({ setToken }) {
   const navigation = useNavigation();
@@ -18,28 +28,35 @@ export default function SignInScreen({ setToken }) {
   };
 
   const handleSignIn = async () => {
-    setPending(false);
+    setPending(true);
     setErrorMessage("");
     try {
-      const result = await signIn(formData);
-      console.log(result);
-      // const userToken = "secret-token";
-      // setToken(userToken);
-      navigation.navigate("Tab");
+      const user = await signIn(formData);
+      // console.log(user);
+      if (user) {
+        const userToken = user.token;
+        setToken(userToken);
+        alert("Welcome back!");
+      } else {
+        setErrorMessage("Unknown email or password");
+      }
     } catch (error) {
       console.log(error);
+      setErrorMessage(error.message);
     }
     setPending(false);
   };
 
+  console.log(formStyles.row);
   return (
-    <View>
+    <KeyboardAvoidingView style={formStyles.container}>
       <View>
         <Text>Email: </Text>
         <TextInput
           placeholder="email"
           value={formData.email}
           onChangeText={handleChangeOf("email")}
+          style={formStyles.row}
         />
         <Text>Password: </Text>
         <TextInput
@@ -48,14 +65,16 @@ export default function SignInScreen({ setToken }) {
           value={formData.password}
           onChangeText={handleChangeOf("password")}
         />
-        <Button title="Sign in" onPress={handleSignIn} disabled={pending} />
-        <TouchableOpacity
+        <Pressable onPress={handleSignIn} disabled={pending}>
+          <Text>Sign In</Text>
+        </Pressable>
+        <Pressable
           onPress={() => {
             navigation.navigate("SignUp");
           }}
         >
           <Text>No account ? Register</Text>
-        </TouchableOpacity>
+        </Pressable>
 
         {pending ? (
           <ActivityIndicator />
@@ -63,6 +82,6 @@ export default function SignInScreen({ setToken }) {
           <Text>{errorMessage}</Text>
         ) : null}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
