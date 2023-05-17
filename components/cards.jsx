@@ -11,6 +11,7 @@ const Cards = ({ rooms }) => {
       extractKey={(item) => item._id}
       //   ItemSeparatorComponent={() => <hr />}
       //   ItemSeparatorComponent={<Separator />}
+      //   ItemSeparatorComponent={Separator}
       renderItem={({ item }) => {
         return (
           <Pressable
