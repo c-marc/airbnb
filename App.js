@@ -43,7 +43,7 @@ export default function App() {
     };
 
     bootstrapAsync();
-  }, []);
+  }, [userToken]);
 
   if (isLoading === true) {
     // We haven't finished checking for the token yet

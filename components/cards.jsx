@@ -1,4 +1,4 @@
-import { FlatList, Pressable, StyleSheet } from "react-native";
+import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Card from "./card";
 
@@ -10,8 +10,7 @@ const Cards = ({ rooms }) => {
       data={rooms}
       extractKey={(item) => item._id}
       //   ItemSeparatorComponent={() => <hr />}
-      //   ItemSeparatorComponent={<Separator />}
-      //   ItemSeparatorComponent={Separator}
+      ItemSeparatorComponent={Separator}
       renderItem={({ item }) => {
         return (
           <Pressable
@@ -28,9 +27,15 @@ const Cards = ({ rooms }) => {
 export default Cards;
 
 const Separator = () => {
-  return <hr />;
+  return <View style={styles.separator}>{/* <Text>tttttt</Text> */}</View>;
 };
 
 const styles = StyleSheet.create({
-  contentContainer: { gap: 20 },
+  //   contentContainer: { gap: 20 },
+  separator: {
+    marginVertical: 20,
+    height: StyleSheet.hairlineWidth,
+    width: "100%",
+    backgroundColor: "grey",
+  },
 });

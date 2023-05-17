@@ -7,8 +7,7 @@ export const signIn = async (payload) => {
     const result = await axios.post(`${API_URL}/user/log_in`, payload);
     return result.data;
   } catch (error) {
-    console.error(error.message);
-    console.error(error.response?.data.message);
+    console.error(error.response?.data.error);
   }
 };
 
@@ -17,8 +16,7 @@ export const signUp = async (payload) => {
     const result = await axios.post(`${API_URL}/user/sign_up`, payload);
     return result.data;
   } catch (error) {
-    console.error(error.message);
-    console.error(error.response?.data.message);
+    console.error(error.response?.data.error);
   }
 };
 
@@ -27,7 +25,7 @@ export const getRooms = async () => {
     const result = await axios.get(`${API_URL}/rooms`);
     return result.data;
   } catch (error) {
-    console.error(error.message);
+    console.error(error.response?.data.error);
   }
 };
 
@@ -36,6 +34,6 @@ export const getRoom = async (roomId) => {
     const result = await axios.get(`${API_URL}/rooms/${roomId}`);
     return result.data;
   } catch (error) {
-    console.error(error.message);
+    console.error(error.response?.data.error);
   }
 };

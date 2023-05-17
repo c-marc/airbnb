@@ -3,8 +3,8 @@ import {
   Button,
   Text,
   TextInput,
-  View,
-  TouchableOpacity,
+  ScrollView,
+  Image,
   Pressable,
   KeyboardAvoidingView,
 } from "react-native";
@@ -12,10 +12,11 @@ import { useState } from "react";
 import { signIn } from "../services/api";
 import { ActivityIndicator } from "react-native-paper";
 
-import { formStyles } from "../assets/styles";
+import { logoStyles, formStyles as styles } from "../styles/styles";
 
 export default function SignInScreen({ setToken }) {
   const navigation = useNavigation();
+
   const [formData, setFormData] = useState({
     email: "nono@airbnb-api.com",
     password: "pass",
@@ -24,6 +25,7 @@ export default function SignInScreen({ setToken }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChangeOf = (name) => (text) => {
+    setErrorMessage("");
     setFormData({ ...formData, [name]: text });
   };
 
@@ -31,6 +33,10 @@ export default function SignInScreen({ setToken }) {
     setPending(true);
     setErrorMessage("");
     try {
+      if (!formData.email || !formData.password) {
+        throw new Error("All fields are required");
+      }
+
       const user = await signIn(formData);
       // console.log(user);
       if (user) {
@@ -41,31 +47,36 @@ export default function SignInScreen({ setToken }) {
         setErrorMessage("Unknown email or password");
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       setErrorMessage(error.message);
     }
     setPending(false);
   };
 
-  console.log(formStyles.row);
   return (
-    <KeyboardAvoidingView style={formStyles.container}>
-      <View>
-        <Text>Email: </Text>
+    <KeyboardAvoidingView>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <Image source={require("../assets/logo.png")} style={logoStyles.logo} />
+
+        <Text style={logoStyles.title}>Sign up</Text>
+
         <TextInput
+          style={styles.input}
           placeholder="email"
           value={formData.email}
           onChangeText={handleChangeOf("email")}
-          style={formStyles.row}
         />
-        <Text>Password: </Text>
         <TextInput
+          style={styles.input}
           placeholder="password"
           secureTextEntry={true}
           value={formData.password}
           onChangeText={handleChangeOf("password")}
         />
-        <Pressable onPress={handleSignIn} disabled={pending}>
+        <Pressable onPress={handleSignIn} disabled={pending} style={styles.btn}>
           <Text>Sign In</Text>
         </Pressable>
         <Pressable
@@ -81,7 +92,7 @@ export default function SignInScreen({ setToken }) {
         ) : errorMessage ? (
           <Text>{errorMessage}</Text>
         ) : null}
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

@@ -1,7 +1,10 @@
 import { View, Image, Text } from "react-native";
 import { StyleSheet } from "react-native";
 
-const PricedPhoto = ({ url, price }) => {
+const PricedPhoto = ({ room }) => {
+  const url = room.photos[0].url;
+  const { price } = room;
+
   return (
     <View style="container">
       <Image source={{ uri: url }} style={styles.img} />

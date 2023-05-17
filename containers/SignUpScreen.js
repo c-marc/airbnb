@@ -1,18 +1,19 @@
 import {
   Button,
-  TouchableOpacity,
+  ScrollView,
   Text,
   TextInput,
   View,
   ActivityIndicator,
   Pressable,
+  Image,
 } from "react-native";
 import { signUp } from "../services/api";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { KeyboardAvoidingView } from "react-native-web";
+import { KeyboardAvoidingView } from "react-native";
 
-import { formStyles } from "../assets/styles";
+import { logoStyles, formStyles as styles } from "../styles/styles";
 
 export default function SignUpScreen({ setToken }) {
   const navigation = useNavigation();
@@ -24,10 +25,12 @@ export default function SignUpScreen({ setToken }) {
     password: "pass",
     passwordCheck: "pass",
   });
+
   const [pending, setPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChangeOf = (name) => (text) => {
+    setErrorMessage("");
     setFormData({ ...formData, [name]: text });
   };
 
@@ -48,12 +51,15 @@ export default function SignUpScreen({ setToken }) {
       }
 
       const user = await signUp(formData);
-      console.log(user);
+      // console.log(user);
+      if (!user) {
+        throw new Error("Subscription failed");
+      }
       const userToken = user.token;
       setToken(userToken);
-      alert("Welcome back!");
+      alert("Welcome !");
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       setErrorMessage(error.message);
     }
     setPending(false);
@@ -61,45 +67,54 @@ export default function SignUpScreen({ setToken }) {
 
   return (
     <KeyboardAvoidingView>
-      <View style={formStyles.container}>
-        <Text>Email: </Text>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <Image source={require("../assets/logo.png")} style={logoStyles.logo} />
+
+        <Text style={logoStyles.title}>Sign up</Text>
+
         <TextInput
+          style={styles.input}
           placeholder="email"
           value={formData.email}
-          onChange={handleChangeOf("email")}
+          onChangeText={handleChangeOf("email")}
         />
-        <Text>Name: </Text>
+
         <TextInput
+          style={styles.input}
           placeholder="username"
           value={formData.username}
-          onChange={handleChangeOf("username")}
+          onChangeText={handleChangeOf("username")}
         />
-        <Text>Description: </Text>
+
         <TextInput
+          style={styles.textarea}
           placeholder="description"
           value={formData.description}
-          onChange={handleChangeOf("description")}
+          onChangeText={handleChangeOf("description")}
           multiline={true}
           textAlignVertical="top"
         />
 
-        <Text>Password: </Text>
         <TextInput
+          style={styles.input}
           placeholder="password"
           secureTextEntry={true}
           value={formData.password}
-          onChange={handleChangeOf("password")}
+          onChangeText={handleChangeOf("password")}
         />
 
-        <Text>Confirm password: </Text>
         <TextInput
+          style={styles.input}
           placeholder="password"
           secureTextEntry={true}
-          value={formData.password2}
-          onChange={handleChangeOf("passwordCheck")}
+          value={formData.passwordCheck}
+          onChangeText={handleChangeOf("passwordCheck")}
         />
 
-        <Pressable onPress={handleSignUp} disabled={pending}>
+        <Pressable onPress={handleSignUp} disabled={pending} style={styles.btn}>
           <Text>Sign Up</Text>
         </Pressable>
 
@@ -116,7 +131,7 @@ export default function SignUpScreen({ setToken }) {
         ) : errorMessage ? (
           <Text>{errorMessage}</Text>
         ) : null}
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
