@@ -9,16 +9,24 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getRooms();
-      if (!ignore) {
-        setRooms(result);
-        setIsLoading(false);
+      try {
+        const result = await getRooms();
+        if (!ignore) {
+          setRooms(result);
+        }
+      } catch (error) {
+        console.log(error.message);
+        setErrorMessage("Something went wrong with the API...");
       }
+      setIsLoading(false);
     };
+    // Go
     setIsLoading(true);
     let ignore = false;
     fetchData();
@@ -37,11 +45,10 @@ export default function HomeScreen() {
 
       {isLoading ? (
         <ActivityIndicator />
+      ) : errorMessage ? (
+        <View>{errorMessage}</View>
       ) : (
-        <View>
-          <Text>{rooms.length} results</Text>
-          <Cards rooms={rooms} />
-        </View>
+        <Cards rooms={rooms} />
       )}
     </View>
   );

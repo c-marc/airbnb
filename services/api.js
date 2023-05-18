@@ -37,3 +37,15 @@ export const getRoom = async (roomId) => {
     console.error(error.response?.data.error);
   }
 };
+
+//https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/around
+export const getRoomsAround = async ({ latitude, longitude }) => {
+  try {
+    const result = await axios.get(
+      `${API_URL}/rooms/around?latitude=${latitude}&longitude=${longitude}`
+    );
+    return result.data;
+  } catch (error) {
+    console.error(error.response?.data.error);
+  }
+};

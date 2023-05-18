@@ -11,6 +11,7 @@ import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import SplashScreen from "./containers/SplashScreen";
 import RoomScreen from "./containers/RoomScreen";
+import AroundMeScreen from "./containers/AroundMeScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -55,6 +56,7 @@ export default function App() {
       <Stack.Navigator>
         {userToken === null ? (
           // No token found, user isn't signed in
+          // Only these screens exist
           <>
             <Stack.Screen name="SignIn">
               {() => <SignInScreen setToken={setToken} />}
@@ -117,6 +119,20 @@ export default function App() {
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
+                <Tab.Screen
+                  name="TabAroundMe"
+                  options={{
+                    tabBarLabel: "Around me",
+                    tabBarIcon: ({ color, size }) => (
+                      <Ionicons
+                        name={"location-outline"}
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                  component={AroundMeScreen}
+                />
                 <Tab.Screen
                   name="TabSettings"
                   options={{

@@ -1,4 +1,5 @@
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import { StyleSheet } from "react-native";
 
 const RoomLocation = ({ latitude, longitude, title }) => {
   const marker = {
@@ -7,13 +8,13 @@ const RoomLocation = ({ latitude, longitude, title }) => {
     title,
     description: "Nice !",
   };
-  console.log(marker);
+  // console.log(marker);
 
   return (
     <MapView
       // La MapView doit obligatoirement avoir des dimensions
-      style={{ flex: 1, width: "100%", height: 200 }} // ADD width and height?
-      provider={PROVIDER_GOOGLE} // CHANGE PROVIDER?
+      style={styles.map}
+      provider={PROVIDER_GOOGLE} // Change default Provider
       initialRegion={{
         latitude: latitude,
         longitude: longitude,
@@ -35,3 +36,7 @@ const RoomLocation = ({ latitude, longitude, title }) => {
 };
 
 export default RoomLocation;
+
+const styles = StyleSheet.create({
+  map: { width: "100%", height: 200 },
+});

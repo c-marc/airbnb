@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 
 import Card from "./card";
-import { View } from "react-native";
+import { View, ScrollView } from "react-native";
 import PricedPhoto from "./priced-photo";
 import Details from "./details";
 import RoomLocation from "./room-location";
@@ -11,10 +11,14 @@ import RoomLocation from "./room-location";
 const Room = ({ room }) => {
   const [show, setShow] = useState(false);
 
+  // Coords arer in that order
   const [longitude, latitude] = room.location;
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <PricedPhoto room={room} />
       <View style={styles.details}>
         <Details room={room} />
@@ -33,14 +37,13 @@ const Room = ({ room }) => {
           )}
         </Pressable>
       </View>
-      <Text>Map here</Text>
 
       <RoomLocation
         latitude={latitude}
         longitude={longitude}
         title={room.title}
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -48,6 +51,9 @@ export default Room;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  contentContainer: {
     gap: 5,
   },
   details: {

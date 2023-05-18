@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { Text, View } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { getRoom } from "../services/api";
 import { ActivityIndicator } from "react-native-paper";
 import Room from "../components/room";
@@ -24,11 +24,5 @@ export default function RoomScreen({ route }) {
     return () => (ignore = true);
   }, [roomId]);
 
-  return (
-    <View>
-      <Text>Room Screen</Text>
-
-      {isLoading ? <ActivityIndicator /> : <Room room={room} />}
-    </View>
-  );
+  return <>{isLoading ? <ActivityIndicator /> : <Room room={room} />}</>;
 }
