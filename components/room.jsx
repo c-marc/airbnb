@@ -11,7 +11,7 @@ import RoomLocation from "./room-location";
 const Room = ({ room }) => {
   const [show, setShow] = useState(false);
 
-  const [latitude, longitude] = room.location;
+  const [longitude, latitude] = room.location;
 
   return (
     <View style={styles.container}>
