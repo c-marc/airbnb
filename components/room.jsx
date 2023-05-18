@@ -6,9 +6,13 @@ import Card from "./card";
 import { View } from "react-native";
 import PricedPhoto from "./priced-photo";
 import Details from "./details";
+import RoomLocation from "./room-location";
 
 const Room = ({ room }) => {
   const [show, setShow] = useState(false);
+
+  const [latitude, longitude] = room.location;
+
   return (
     <View style={styles.container}>
       <PricedPhoto room={room} />
@@ -30,6 +34,12 @@ const Room = ({ room }) => {
         </Pressable>
       </View>
       <Text>Map here</Text>
+
+      <RoomLocation
+        latitude={latitude}
+        longitude={longitude}
+        title={room.title}
+      />
     </View>
   );
 };

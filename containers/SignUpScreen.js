@@ -66,7 +66,11 @@ export default function SignUpScreen({ setToken }) {
   };
 
   return (
-    <KeyboardAvoidingView>
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={{ flex: 1 }}
+    // >
+    <View style={{ flex: 1 }}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -132,6 +136,7 @@ export default function SignUpScreen({ setToken }) {
           <Text>{errorMessage}</Text>
         ) : null}
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
+    // </KeyboardAvoidingView>
   );
 }

@@ -5,10 +5,9 @@ import { getRoom } from "../services/api";
 import { ActivityIndicator } from "react-native-paper";
 import Room from "../components/room";
 
-export default function RoomScreen() {
-  const route = useRoute();
-
+export default function RoomScreen({ route }) {
   const { roomId } = route.params;
+
   const [isLoading, setIsLoading] = useState(true);
   const [room, setRoom] = useState(null);
 
