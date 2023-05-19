@@ -39,6 +39,7 @@ export default function ProfileScreen({ user, storeUser }) {
           setFullUser(data);
           setSelectedPicture(data?.photo.url);
           console.log("Fetched user", data);
+          console.log("token ", user.token);
         }
       } catch (error) {
         console.error(message.error);

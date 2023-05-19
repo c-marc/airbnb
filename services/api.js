@@ -72,16 +72,19 @@ export const editPicture = async (token, picture) => {
     const tab = picture.split(".");
     const formData = new FormData();
     formData.append("photo", {
-      uri: selectedPicture,
+      uri: picture,
       name: `avatar.${tab[tab.length - 1]}`,
       type: `image/${tab[tab.length - 1]}`,
     });
+    console.log("hello");
+
     const result = await axios.put(`${API_URL}/user/upload_picture`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("axios", result);
     return result.data;
   } catch (error) {
     console.log(error.response?.data.error);
