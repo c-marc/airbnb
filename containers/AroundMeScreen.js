@@ -10,32 +10,26 @@ const AroundMeScreen = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [coords, setCoords] = useState(null);
+  // use default if the user don't accept geoloc
+  const [coords, setCoords] = useState({ longitude: 2.32, latitude: 48.85 });
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
-    const askPermission = async () => {
+    const askPermissionAndGetData = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      let query = "";
       if (status === "granted") {
         let location = await Location.getCurrentPositionAsync({});
         // console.log("location =>", location); // console.log permettant de visualiser l'objet obtenu
         const phoneCoords = location.coords;
         console.log("Location is", phoneCoords);
-        // setCoords(obj);
-        const fake = { longitude: 2.32, latitude: 48.85 };
-        setCoords(fake);
+        setCoords(phoneCoords);
+        query = `?longitude=${phoneCoords.longitude}&latitude=${phoneCoords.latitude}`;
       } else {
-        setErrorMessage("Something went wrong with Geolocation");
+        // setErrorMessage("Something went wrong with Geolocation");
       }
-    };
-    // Go
-    askPermission();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async (coords) => {
       try {
-        const result = await getRoomsAround(coords);
+        const result = await getRoomsAround(query);
         if (!ignore) {
           setRooms(result);
         }
@@ -45,15 +39,11 @@ const AroundMeScreen = () => {
       }
       setIsLoading(false);
     };
-
     // Go
     let ignore = false;
-    if (coords) {
-      console.log("Fetching rooms around", coords);
-      fetchData(coords);
-    }
+    askPermissionAndGetData();
     return () => (ignore = true);
-  }, [coords]);
+  }, []);
 
   return (
     <View style={styles.container}>

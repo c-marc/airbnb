@@ -12,39 +12,39 @@ import SettingsScreen from "./containers/SettingsScreen";
 import SplashScreen from "./containers/SplashScreen";
 import RoomScreen from "./containers/RoomScreen";
 import AroundMeScreen from "./containers/AroundMeScreen";
+import { ActivityIndicator } from "react-native-paper";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [userToken, setUserToken] = useState(null);
+  const [user, setUser] = useState(null);
 
-  const setToken = async (token) => {
-    if (token) {
-      await AsyncStorage.setItem("userToken", token);
+  const storeUser = async (user) => {
+    if (user) {
+      await AsyncStorage.setItem("user", JSON.stringify(user));
     } else {
-      await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("user");
     }
-
-    setUserToken(token);
+    setUser(user);
   };
 
   useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
+    // Hack to wipe out storage
+    // setAndStoreUser(null);
+
+    // Fetch the user (id and token) from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      // We should also handle error for production apps
-      const userToken = await AsyncStorage.getItem("userToken");
+      const data = await AsyncStorage.getItem("user");
 
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      setUserToken(userToken);
-
+      setUser(JSON.parse(data));
       setIsLoading(false);
     };
 
+    // Go
     bootstrapAsync();
-  }, [userToken]);
+  }, []);
 
   if (isLoading === true) {
     // We haven't finished checking for the token yet
@@ -54,15 +54,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {userToken === null ? (
+        {user === null ? (
           // No token found, user isn't signed in
           // Only these screens exist
           <>
             <Stack.Screen name="SignIn">
-              {() => <SignInScreen setToken={setToken} />}
+              {() => <SignInScreen setUser={storeUser} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {() => <SignUpScreen setToken={setToken} />}
+              {() => <SignUpScreen setUser={storeUser} />}
             </Stack.Screen>
           </>
         ) : (
@@ -94,8 +94,9 @@ export default function App() {
                           headerStyle: { backgroundColor: "red" },
                           headerTitleStyle: { color: "white" },
                         }}
+                        component={HomeScreen}
                       >
-                        {() => <HomeScreen />}
+                        {/* {() => <HomeScreen />} */}
                       </Stack.Screen>
 
                       <Stack.Screen
@@ -107,15 +108,6 @@ export default function App() {
                         }}
                         component={RoomScreen}
                       ></Stack.Screen>
-
-                      <Stack.Screen
-                        name="Profile"
-                        options={{
-                          title: "User Profile",
-                        }}
-                      >
-                        {() => <ProfileScreen />}
-                      </Stack.Screen>
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
@@ -134,29 +126,24 @@ export default function App() {
                   component={AroundMeScreen}
                 />
                 <Tab.Screen
-                  name="TabSettings"
+                  name="TabProfile"
                   options={{
-                    tabBarLabel: "Settings",
+                    tabBarLabel: "Profile",
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons
-                        name={"ios-options"}
+                        name={"ios-person-outline"}
                         size={size}
                         color={color}
                       />
                     ),
                   }}
                 >
-                  {() => (
-                    <Stack.Navigator>
-                      <Stack.Screen
-                        name="Settings"
-                        options={{
-                          title: "Settings",
-                        }}
-                      >
-                        {() => <SettingsScreen setToken={setToken} />}
-                      </Stack.Screen>
-                    </Stack.Navigator>
+                  {(props) => (
+                    <ProfileScreen
+                      {...props}
+                      user={user}
+                      storeUser={storeUser}
+                    />
                   )}
                 </Tab.Screen>
               </Tab.Navigator>

@@ -14,7 +14,7 @@ import { ActivityIndicator } from "react-native-paper";
 
 import { logoStyles, formStyles as styles } from "../styles/styles";
 
-export default function SignInScreen({ setToken }) {
+export default function SignInScreen({ setUser }) {
   const navigation = useNavigation();
 
   const [formData, setFormData] = useState({
@@ -38,10 +38,10 @@ export default function SignInScreen({ setToken }) {
       }
 
       const user = await signIn(formData);
-      // console.log(user);
+      console.log(user);
       if (user) {
-        const userToken = user.token;
-        setToken(userToken);
+        const storedUser = { id: user.id, token: user.token };
+        setUser(storedUser);
         alert("Welcome back!");
       } else {
         setErrorMessage("Unknown email or password");

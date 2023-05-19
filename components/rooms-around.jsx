@@ -1,7 +1,10 @@
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function RoomsAround({ coords, rooms }) {
+  const navigation = useNavigation();
+
   return (
     <MapView
       // La MapView doit obligatoirement avoir des dimensions
@@ -26,6 +29,7 @@ export default function RoomsAround({ coords, rooms }) {
             }}
             title={room.title}
             description={room.description}
+            onPress={() => navigation.navigate("Room", { roomId: room._id })}
           />
         );
       })}
